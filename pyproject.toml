@@ -1,0 +1,25 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "tombolo"
+version = "0.1.0"
+description = "Python interface to R statistics via Docker"
+readme = "README.md"
+license = "MIT"
+authors = [{ name = "Ethan Davis", email = "ethandavisecd@gmail.com" }]
+requires-python = ">=3.9"
+keywords = ["Python", "R", "Docker", "statistics"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering",
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+]
+dependencies = ["jsonschema", "matplotlib", "pandas", "plottable"]
+
+[project.urls]
+Source = "https://github.com/davisethan/tombolo-py"
+"Docker Hub" = "https://hub.docker.com/r/ethandavisecd/tombolo"

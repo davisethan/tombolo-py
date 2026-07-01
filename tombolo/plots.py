@@ -3,9 +3,10 @@ import re
 import jsonschema
 import matplotlib.pyplot as plt
 
-from ._utils import _grid, _table, _forest, _barh
+from ._utils import _grid, _table, _forest, _barh, _reset_style
 
 
+@_reset_style
 def ranking_plot(data: dict) -> plt.Figure:
     """Horizontal bar chart of treatment rankings.
 
@@ -29,6 +30,7 @@ def ranking_plot(data: dict) -> plt.Figure:
     return _barh(data["ranking"])
 
 
+@_reset_style
 def league_table(data: dict) -> plt.Figure:
     """Grid of pairwise treatment comparisons.
 
@@ -69,6 +71,7 @@ def league_table(data: dict) -> plt.Figure:
     return _grid(data["league"])
 
 
+@_reset_style
 def heterogeneity_table(data: dict) -> plt.Figure:
     """Summary table of heterogeneity statistics.
 
@@ -125,6 +128,7 @@ def heterogeneity_table(data: dict) -> plt.Figure:
     return _table(data["heterogeneity"])
 
 
+@_reset_style
 def forest_plot(data: dict, reference: str) -> plt.Figure:
     """Forest plot of all treatments relative to a reference.
 
@@ -173,6 +177,7 @@ def forest_plot(data: dict, reference: str) -> plt.Figure:
     return _forest(data["league"], ref, interval_label=label)
 
 
+@_reset_style
 def prediction_table(data: dict) -> plt.Figure:
     """Grid of prediction intervals. Only applicable to NMA results.
 
@@ -206,6 +211,7 @@ def prediction_table(data: dict) -> plt.Figure:
     return _grid(data["prediction"])
 
 
+@_reset_style
 def convergence_table(data: dict) -> plt.Figure:
     """Summary table of MCMC convergence diagnostics. Only applicable to BNMA results.
 

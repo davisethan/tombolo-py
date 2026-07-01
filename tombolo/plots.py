@@ -3,13 +3,15 @@ import re
 import jsonschema
 import matplotlib.pyplot as plt
 
-from ._utils import _grid, _table, _forest, _barh
+from ._utils import _grid, _table, _forest, _barh, _reset_style
 
 
+@_reset_style
 def ranking_plot(data: dict) -> plt.Figure:
     """Horizontal bar chart of treatment rankings.
 
     Parameters:
+
     - `data`: Result dict from `tombolo.nma` or `tombolo.bnma`.
 
     Returns treatments sorted by rank score (P-score for NMA, SUCRA for BNMA).
@@ -28,10 +30,12 @@ def ranking_plot(data: dict) -> plt.Figure:
     return _barh(data["ranking"])
 
 
+@_reset_style
 def league_table(data: dict) -> plt.Figure:
     """Grid of pairwise treatment comparisons.
 
     Parameters:
+
     - `data`: Result dict from `tombolo.nma` or `tombolo.bnma`.
 
     Each cell shows the mean difference and confidence (or credible) interval for the row
@@ -67,10 +71,12 @@ def league_table(data: dict) -> plt.Figure:
     return _grid(data["league"])
 
 
+@_reset_style
 def heterogeneity_table(data: dict) -> plt.Figure:
     """Summary table of heterogeneity statistics.
 
     Parameters:
+
     - `data`: Result dict from `tombolo.nma` or `tombolo.bnma`.
 
     For NMA results: Q statistic, p-value, I², and τ.
@@ -122,10 +128,12 @@ def heterogeneity_table(data: dict) -> plt.Figure:
     return _table(data["heterogeneity"])
 
 
+@_reset_style
 def forest_plot(data: dict, reference: str) -> plt.Figure:
     """Forest plot of all treatments relative to a reference.
 
     Parameters:
+
     - `data`: Result dict from `tombolo.nma` or `tombolo.bnma`.
     - `reference`: Name of the reference treatment. All other treatments are plotted
       relative to it, sorted by effect size. Non-alphanumeric characters are normalized to underscores.
@@ -169,10 +177,12 @@ def forest_plot(data: dict, reference: str) -> plt.Figure:
     return _forest(data["league"], ref, interval_label=label)
 
 
+@_reset_style
 def prediction_table(data: dict) -> plt.Figure:
     """Grid of prediction intervals. Only applicable to NMA results.
 
     Parameters:
+
     - `data`: Result dict from `tombolo.nma`.
 
     Each cell shows the 95% prediction interval for the row treatment relative to the column treatment.
@@ -201,10 +211,12 @@ def prediction_table(data: dict) -> plt.Figure:
     return _grid(data["prediction"])
 
 
+@_reset_style
 def convergence_table(data: dict) -> plt.Figure:
     """Summary table of MCMC convergence diagnostics. Only applicable to BNMA results.
 
     Parameters:
+
     - `data`: Result dict from `tombolo.bnma`.
 
     Returns R-hat (max), ESS bulk (min), and ESS tail (min) across all model parameters.

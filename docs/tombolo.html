@@ -30,10 +30,10 @@
             <h2>API Documentation</h2>
                 <ul class="memberlist">
             <li>
-                    <a class="function" href="#bnma">bnma</a>
+                    <a class="function" href="#nma">nma</a>
             </li>
             <li>
-                    <a class="function" href="#nma">nma</a>
+                    <a class="function" href="#bnma">bnma</a>
             </li>
     </ul>
 
@@ -79,90 +79,11 @@ tombolo    </h1>
 </span><span id="L-12"><a href="#L-12"><span class="linenos">12</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">.run</span><span class="w"> </span><span class="kn">import</span> <span class="n">bnma</span><span class="p">,</span> <span class="n">nma</span>
 </span><span id="L-13"><a href="#L-13"><span class="linenos">13</span></a><span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">plots</span>
 </span><span id="L-14"><a href="#L-14"><span class="linenos">14</span></a>
-</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;bnma&quot;</span><span class="p">,</span> <span class="s2">&quot;nma&quot;</span><span class="p">,</span> <span class="s2">&quot;plots&quot;</span><span class="p">]</span>
+</span><span id="L-15"><a href="#L-15"><span class="linenos">15</span></a><span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;nma&quot;</span><span class="p">,</span> <span class="s2">&quot;bnma&quot;</span><span class="p">,</span> <span class="s2">&quot;plots&quot;</span><span class="p">]</span>
 </span></pre></div>
 
 
             </section>
-                <section id="bnma">
-                            <input id="bnma-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
-<div class="attr function">
-            
-        <span class="def">def</span>
-        <span class="name">bnma</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span>, </span><span class="param"><span class="n">greater_is_better</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span></span><span class="return-annotation">) -> <span class="nb">dict</span>:</span></span>
-
-                <label class="view-source-button" for="bnma-view-source"><span>View Source</span></label>
-
-    </div>
-    <a class="headerlink" href="#bnma"></a>
-            <div class="pdoc-code codehilite"><pre><span></span><span id="bnma-73"><a href="#bnma-73"><span class="linenos"> 73</span></a><span class="k">def</span><span class="w"> </span><span class="nf">bnma</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span> <span class="n">greater_is_better</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
-</span><span id="bnma-74"><a href="#bnma-74"><span class="linenos"> 74</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Run a Bayesian random-effects network meta-analysis.</span>
-</span><span id="bnma-75"><a href="#bnma-75"><span class="linenos"> 75</span></a>
-</span><span id="bnma-76"><a href="#bnma-76"><span class="linenos"> 76</span></a><span class="sd">    Uses the `gemtc` R package with JAGS (normal likelihood, identity link).</span>
-</span><span id="bnma-77"><a href="#bnma-77"><span class="linenos"> 77</span></a>
-</span><span id="bnma-78"><a href="#bnma-78"><span class="linenos"> 78</span></a><span class="sd">    Parameters:</span>
-</span><span id="bnma-79"><a href="#bnma-79"><span class="linenos"> 79</span></a><span class="sd">    - `data`: Arm-level summary data. Each element requires `study` (str), `treatment` (str),</span>
-</span><span id="bnma-80"><a href="#bnma-80"><span class="linenos"> 80</span></a><span class="sd">      `mean` (float), `std.dev` (float), `sampleSize` (int).</span>
-</span><span id="bnma-81"><a href="#bnma-81"><span class="linenos"> 81</span></a><span class="sd">    - `greater_is_better`: If `True`, higher values rank better (e.g. accuracy).</span>
-</span><span id="bnma-82"><a href="#bnma-82"><span class="linenos"> 82</span></a><span class="sd">      If `False`, lower values rank better (e.g. error rate).</span>
-</span><span id="bnma-83"><a href="#bnma-83"><span class="linenos"> 83</span></a>
-</span><span id="bnma-84"><a href="#bnma-84"><span class="linenos"> 84</span></a><span class="sd">    Returns a dict with:</span>
-</span><span id="bnma-85"><a href="#bnma-85"><span class="linenos"> 85</span></a><span class="sd">    - `ranking`: SUCRA per treatment (0–1, higher = better rank).</span>
-</span><span id="bnma-86"><a href="#bnma-86"><span class="linenos"> 86</span></a><span class="sd">    - `league`: Pairwise posterior median `md` and 95% credible interval `lower`, `upper` — each a treatment × treatment matrix.</span>
-</span><span id="bnma-87"><a href="#bnma-87"><span class="linenos"> 87</span></a><span class="sd">    - `heterogeneity`: Posterior `sd`, `sd_lower`, `sd_upper` (2.5th–97.5th percentile).</span>
-</span><span id="bnma-88"><a href="#bnma-88"><span class="linenos"> 88</span></a><span class="sd">    - `convergence`: `rhat_max`, `ess_bulk_min`, `ess_tail_min` across all model parameters.</span>
-</span><span id="bnma-89"><a href="#bnma-89"><span class="linenos"> 89</span></a>
-</span><span id="bnma-90"><a href="#bnma-90"><span class="linenos"> 90</span></a><span class="sd">    Raises `jsonschema.ValidationError` if `data` does not match the expected schema,</span>
-</span><span id="bnma-91"><a href="#bnma-91"><span class="linenos"> 91</span></a><span class="sd">    or `RuntimeError` if the R process returns an error.</span>
-</span><span id="bnma-92"><a href="#bnma-92"><span class="linenos"> 92</span></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="bnma-93"><a href="#bnma-93"><span class="linenos"> 93</span></a>    <span class="n">_schema</span> <span class="o">=</span> <span class="p">{</span>
-</span><span id="bnma-94"><a href="#bnma-94"><span class="linenos"> 94</span></a>        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;array&quot;</span><span class="p">,</span>
-</span><span id="bnma-95"><a href="#bnma-95"><span class="linenos"> 95</span></a>        <span class="s2">&quot;items&quot;</span><span class="p">:</span> <span class="p">{</span>
-</span><span id="bnma-96"><a href="#bnma-96"><span class="linenos"> 96</span></a>            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
-</span><span id="bnma-97"><a href="#bnma-97"><span class="linenos"> 97</span></a>            <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
-</span><span id="bnma-98"><a href="#bnma-98"><span class="linenos"> 98</span></a>                <span class="s2">&quot;study&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">},</span>
-</span><span id="bnma-99"><a href="#bnma-99"><span class="linenos"> 99</span></a>                <span class="s2">&quot;treatment&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">},</span>
-</span><span id="bnma-100"><a href="#bnma-100"><span class="linenos">100</span></a>                <span class="s2">&quot;mean&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span><span class="p">},</span>
-</span><span id="bnma-101"><a href="#bnma-101"><span class="linenos">101</span></a>                <span class="s2">&quot;std.dev&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span><span class="p">},</span>
-</span><span id="bnma-102"><a href="#bnma-102"><span class="linenos">102</span></a>                <span class="s2">&quot;sampleSize&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;integer&quot;</span><span class="p">},</span>
-</span><span id="bnma-103"><a href="#bnma-103"><span class="linenos">103</span></a>            <span class="p">},</span>
-</span><span id="bnma-104"><a href="#bnma-104"><span class="linenos">104</span></a>            <span class="s2">&quot;required&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;study&quot;</span><span class="p">,</span> <span class="s2">&quot;treatment&quot;</span><span class="p">,</span> <span class="s2">&quot;mean&quot;</span><span class="p">,</span> <span class="s2">&quot;std.dev&quot;</span><span class="p">,</span> <span class="s2">&quot;sampleSize&quot;</span><span class="p">],</span>
-</span><span id="bnma-105"><a href="#bnma-105"><span class="linenos">105</span></a>            <span class="s2">&quot;additionalProperties&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-</span><span id="bnma-106"><a href="#bnma-106"><span class="linenos">106</span></a>        <span class="p">},</span>
-</span><span id="bnma-107"><a href="#bnma-107"><span class="linenos">107</span></a>    <span class="p">}</span>
-</span><span id="bnma-108"><a href="#bnma-108"><span class="linenos">108</span></a>    <span class="n">jsonschema</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">instance</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">_schema</span><span class="p">)</span>
-</span><span id="bnma-109"><a href="#bnma-109"><span class="linenos">109</span></a>    <span class="k">return</span> <span class="n">_run</span><span class="p">(</span><span class="s2">&quot;bnma&quot;</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">greater_is_better</span><span class="p">)</span>
-</span></pre></div>
-
-
-            <div class="docstring"><p>Run a Bayesian random-effects network meta-analysis.</p>
-
-<p>Uses the <code>gemtc</code> R package with JAGS (normal likelihood, identity link).</p>
-
-<p>Parameters:</p>
-
-<ul>
-<li><code>data</code>: Arm-level summary data. Each element requires <code>study</code> (str), <code>treatment</code> (str),
-<code>mean</code> (float), <code>std.dev</code> (float), <code>sampleSize</code> (int).</li>
-<li><code>greater_is_better</code>: If <code>True</code>, higher values rank better (e.g. accuracy).
-If <code>False</code>, lower values rank better (e.g. error rate).</li>
-</ul>
-
-<p>Returns a dict with:</p>
-
-<ul>
-<li><code>ranking</code>: SUCRA per treatment (0–1, higher = better rank).</li>
-<li><code>league</code>: Pairwise posterior median <code>md</code> and 95% credible interval <code>lower</code>, <code>upper</code> — each a treatment × treatment matrix.</li>
-<li><code>heterogeneity</code>: Posterior <code>sd</code>, <code>sd_lower</code>, <code>sd_upper</code> (2.5th–97.5th percentile).</li>
-<li><code>convergence</code>: <code>rhat_max</code>, <code>ess_bulk_min</code>, <code>ess_tail_min</code> across all model parameters.</li>
-</ul>
-
-<p>Raises <code>jsonschema.ValidationError</code> if <code>data</code> does not match the expected schema,
-or <code>RuntimeError</code> if the R process returns an error.</p>
-</div>
-
-
-                </section>
                 <section id="nma">
                             <input id="nma-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
 <div class="attr function">
@@ -234,6 +155,85 @@ If <code>False</code>, lower values rank better (e.g. error rate).</li>
 <li><code>league</code>: Pairwise <code>md</code>, <code>lower</code>, <code>upper</code>, <code>z</code>, <code>pval</code> — each a treatment × treatment matrix.</li>
 <li><code>heterogeneity</code>: <code>tau2</code>, <code>tau</code>, <code>i2</code>, <code>i2_lower</code>, <code>i2_upper</code>, <code>q</code>, <code>q_df</code>, <code>q_pval</code>.</li>
 <li><code>prediction</code>: Prediction interval <code>lower</code> and <code>upper</code> — each a treatment × treatment matrix.</li>
+</ul>
+
+<p>Raises <code>jsonschema.ValidationError</code> if <code>data</code> does not match the expected schema,
+or <code>RuntimeError</code> if the R process returns an error.</p>
+</div>
+
+
+                </section>
+                <section id="bnma">
+                            <input id="bnma-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">bnma</span><span class="signature pdoc-code condensed">(<span class="param"><span class="n">data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span>, </span><span class="param"><span class="n">greater_is_better</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span></span><span class="return-annotation">) -> <span class="nb">dict</span>:</span></span>
+
+                <label class="view-source-button" for="bnma-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#bnma"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="bnma-73"><a href="#bnma-73"><span class="linenos"> 73</span></a><span class="k">def</span><span class="w"> </span><span class="nf">bnma</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">],</span> <span class="n">greater_is_better</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+</span><span id="bnma-74"><a href="#bnma-74"><span class="linenos"> 74</span></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Run a Bayesian random-effects network meta-analysis.</span>
+</span><span id="bnma-75"><a href="#bnma-75"><span class="linenos"> 75</span></a>
+</span><span id="bnma-76"><a href="#bnma-76"><span class="linenos"> 76</span></a><span class="sd">    Uses the `gemtc` R package with JAGS (normal likelihood, identity link).</span>
+</span><span id="bnma-77"><a href="#bnma-77"><span class="linenos"> 77</span></a>
+</span><span id="bnma-78"><a href="#bnma-78"><span class="linenos"> 78</span></a><span class="sd">    Parameters:</span>
+</span><span id="bnma-79"><a href="#bnma-79"><span class="linenos"> 79</span></a><span class="sd">    - `data`: Arm-level summary data. Each element requires `study` (str), `treatment` (str),</span>
+</span><span id="bnma-80"><a href="#bnma-80"><span class="linenos"> 80</span></a><span class="sd">      `mean` (float), `std.dev` (float), `sampleSize` (int).</span>
+</span><span id="bnma-81"><a href="#bnma-81"><span class="linenos"> 81</span></a><span class="sd">    - `greater_is_better`: If `True`, higher values rank better (e.g. accuracy).</span>
+</span><span id="bnma-82"><a href="#bnma-82"><span class="linenos"> 82</span></a><span class="sd">      If `False`, lower values rank better (e.g. error rate).</span>
+</span><span id="bnma-83"><a href="#bnma-83"><span class="linenos"> 83</span></a>
+</span><span id="bnma-84"><a href="#bnma-84"><span class="linenos"> 84</span></a><span class="sd">    Returns a dict with:</span>
+</span><span id="bnma-85"><a href="#bnma-85"><span class="linenos"> 85</span></a><span class="sd">    - `ranking`: SUCRA per treatment (0–1, higher = better rank).</span>
+</span><span id="bnma-86"><a href="#bnma-86"><span class="linenos"> 86</span></a><span class="sd">    - `league`: Pairwise posterior median `md` and 95% credible interval `lower`, `upper` — each a treatment × treatment matrix.</span>
+</span><span id="bnma-87"><a href="#bnma-87"><span class="linenos"> 87</span></a><span class="sd">    - `heterogeneity`: Posterior `sd`, `sd_lower`, `sd_upper` (2.5th–97.5th percentile).</span>
+</span><span id="bnma-88"><a href="#bnma-88"><span class="linenos"> 88</span></a><span class="sd">    - `convergence`: `rhat_max`, `ess_bulk_min`, `ess_tail_min` across all model parameters.</span>
+</span><span id="bnma-89"><a href="#bnma-89"><span class="linenos"> 89</span></a>
+</span><span id="bnma-90"><a href="#bnma-90"><span class="linenos"> 90</span></a><span class="sd">    Raises `jsonschema.ValidationError` if `data` does not match the expected schema,</span>
+</span><span id="bnma-91"><a href="#bnma-91"><span class="linenos"> 91</span></a><span class="sd">    or `RuntimeError` if the R process returns an error.</span>
+</span><span id="bnma-92"><a href="#bnma-92"><span class="linenos"> 92</span></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="bnma-93"><a href="#bnma-93"><span class="linenos"> 93</span></a>    <span class="n">_schema</span> <span class="o">=</span> <span class="p">{</span>
+</span><span id="bnma-94"><a href="#bnma-94"><span class="linenos"> 94</span></a>        <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;array&quot;</span><span class="p">,</span>
+</span><span id="bnma-95"><a href="#bnma-95"><span class="linenos"> 95</span></a>        <span class="s2">&quot;items&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span id="bnma-96"><a href="#bnma-96"><span class="linenos"> 96</span></a>            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+</span><span id="bnma-97"><a href="#bnma-97"><span class="linenos"> 97</span></a>            <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span id="bnma-98"><a href="#bnma-98"><span class="linenos"> 98</span></a>                <span class="s2">&quot;study&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">},</span>
+</span><span id="bnma-99"><a href="#bnma-99"><span class="linenos"> 99</span></a>                <span class="s2">&quot;treatment&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">},</span>
+</span><span id="bnma-100"><a href="#bnma-100"><span class="linenos">100</span></a>                <span class="s2">&quot;mean&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span><span class="p">},</span>
+</span><span id="bnma-101"><a href="#bnma-101"><span class="linenos">101</span></a>                <span class="s2">&quot;std.dev&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span><span class="p">},</span>
+</span><span id="bnma-102"><a href="#bnma-102"><span class="linenos">102</span></a>                <span class="s2">&quot;sampleSize&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;integer&quot;</span><span class="p">},</span>
+</span><span id="bnma-103"><a href="#bnma-103"><span class="linenos">103</span></a>            <span class="p">},</span>
+</span><span id="bnma-104"><a href="#bnma-104"><span class="linenos">104</span></a>            <span class="s2">&quot;required&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;study&quot;</span><span class="p">,</span> <span class="s2">&quot;treatment&quot;</span><span class="p">,</span> <span class="s2">&quot;mean&quot;</span><span class="p">,</span> <span class="s2">&quot;std.dev&quot;</span><span class="p">,</span> <span class="s2">&quot;sampleSize&quot;</span><span class="p">],</span>
+</span><span id="bnma-105"><a href="#bnma-105"><span class="linenos">105</span></a>            <span class="s2">&quot;additionalProperties&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+</span><span id="bnma-106"><a href="#bnma-106"><span class="linenos">106</span></a>        <span class="p">},</span>
+</span><span id="bnma-107"><a href="#bnma-107"><span class="linenos">107</span></a>    <span class="p">}</span>
+</span><span id="bnma-108"><a href="#bnma-108"><span class="linenos">108</span></a>    <span class="n">jsonschema</span><span class="o">.</span><span class="n">validate</span><span class="p">(</span><span class="n">instance</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">schema</span><span class="o">=</span><span class="n">_schema</span><span class="p">)</span>
+</span><span id="bnma-109"><a href="#bnma-109"><span class="linenos">109</span></a>    <span class="k">return</span> <span class="n">_run</span><span class="p">(</span><span class="s2">&quot;bnma&quot;</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">greater_is_better</span><span class="p">)</span>
+</span></pre></div>
+
+
+            <div class="docstring"><p>Run a Bayesian random-effects network meta-analysis.</p>
+
+<p>Uses the <code>gemtc</code> R package with JAGS (normal likelihood, identity link).</p>
+
+<p>Parameters:</p>
+
+<ul>
+<li><code>data</code>: Arm-level summary data. Each element requires <code>study</code> (str), <code>treatment</code> (str),
+<code>mean</code> (float), <code>std.dev</code> (float), <code>sampleSize</code> (int).</li>
+<li><code>greater_is_better</code>: If <code>True</code>, higher values rank better (e.g. accuracy).
+If <code>False</code>, lower values rank better (e.g. error rate).</li>
+</ul>
+
+<p>Returns a dict with:</p>
+
+<ul>
+<li><code>ranking</code>: SUCRA per treatment (0–1, higher = better rank).</li>
+<li><code>league</code>: Pairwise posterior median <code>md</code> and 95% credible interval <code>lower</code>, <code>upper</code> — each a treatment × treatment matrix.</li>
+<li><code>heterogeneity</code>: Posterior <code>sd</code>, <code>sd_lower</code>, <code>sd_upper</code> (2.5th–97.5th percentile).</li>
+<li><code>convergence</code>: <code>rhat_max</code>, <code>ess_bulk_min</code>, <code>ess_tail_min</code> across all model parameters.</li>
 </ul>
 
 <p>Raises <code>jsonschema.ValidationError</code> if <code>data</code> does not match the expected schema,

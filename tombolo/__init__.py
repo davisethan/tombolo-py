@@ -12,4 +12,4 @@ See the [Docker Hub image](https://hub.docker.com/r/ethandavisecd/tombolo) for d
 from .run import bnma, nma
 from . import plots
 
-__all__ = ["bnma", "nma", "plots"]
+__all__ = ["nma", "bnma", "plots"]

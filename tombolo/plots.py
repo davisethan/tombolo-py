@@ -78,7 +78,16 @@ def heterogeneity_table(data: dict) -> plt.Figure:
     """
     _nma_heterogeneity = {
         "type": "object",
-        "required": ["tau2", "tau", "i2", "i2_lower", "i2_upper", "q", "q_df", "q_pval"],
+        "required": [
+            "tau2",
+            "tau",
+            "i2",
+            "i2_lower",
+            "i2_upper",
+            "q",
+            "q_df",
+            "q_pval",
+        ],
         "properties": {
             "tau2": {"type": "number", "minimum": 0},
             "tau": {"type": "number", "minimum": 0},
@@ -155,7 +164,7 @@ def forest_plot(data: dict, reference: str) -> plt.Figure:
     ref = re.sub(r"[^A-Za-z0-9_]", "_", reference)
     if ref not in data["league"]["md"]:
         raise RuntimeError("Missing reference")
-    
+
     label = "[95% CI]" if "pval" in data["league"] else "[95% CrI]"
     return _forest(data["league"], ref, interval_label=label)
 

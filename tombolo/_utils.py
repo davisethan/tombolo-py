@@ -1,7 +1,19 @@
+import functools
+
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from plottable import ColumnDefinition, Table
+
+
+def _reset_style(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        with plt.rc_context(matplotlib.rcParamsDefault):
+            return func(*args, **kwargs)
+
+    return wrapper
 
 
 def _significance(pval):

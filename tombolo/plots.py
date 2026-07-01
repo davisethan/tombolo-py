@@ -14,7 +14,7 @@ def ranking_plot(data: dict) -> plt.Figure:
 
     Returns treatments sorted by rank score (P-score for NMA, SUCRA for BNMA).
     """
-    _schema = {
+    schema = {
         "type": "object",
         "required": ["ranking"],
         "properties": {
@@ -24,7 +24,7 @@ def ranking_plot(data: dict) -> plt.Figure:
             }
         },
     }
-    jsonschema.validate(instance=data, schema=_schema)
+    jsonschema.validate(instance=data, schema=schema)
     return _barh(data["ranking"])
 
 
@@ -38,7 +38,7 @@ def league_table(data: dict) -> plt.Figure:
     treatment relative to the column treatment. Diagonal cells show the treatment name.
     P-values are included for NMA results.
     """
-    _matrix = {
+    matrix = {
         "type": "object",
         "additionalProperties": {
             "type": "object",
@@ -46,7 +46,7 @@ def league_table(data: dict) -> plt.Figure:
         },
     }
 
-    _schema = {
+    schema = {
         "type": "object",
         "required": ["league"],
         "properties": {
@@ -54,16 +54,16 @@ def league_table(data: dict) -> plt.Figure:
                 "type": "object",
                 "required": ["md", "lower", "upper"],
                 "properties": {
-                    "md": _matrix,
-                    "lower": _matrix,
-                    "upper": _matrix,
-                    "pval": _matrix,
+                    "md": matrix,
+                    "lower": matrix,
+                    "upper": matrix,
+                    "pval": matrix,
                 },
             }
         },
     }
 
-    jsonschema.validate(instance=data, schema=_schema)
+    jsonschema.validate(instance=data, schema=schema)
     return _grid(data["league"])
 
 
@@ -76,7 +76,7 @@ def heterogeneity_table(data: dict) -> plt.Figure:
     For NMA results: Q statistic, p-value, I², and τ.
     For BNMA results: posterior SD and 95% credible interval.
     """
-    _nma_heterogeneity = {
+    nma_heterogeneity = {
         "type": "object",
         "required": [
             "tau2",
@@ -100,7 +100,7 @@ def heterogeneity_table(data: dict) -> plt.Figure:
         },
     }
 
-    _bnma_heterogeneity = {
+    bnma_heterogeneity = {
         "type": "object",
         "required": ["sd", "sd_lower", "sd_upper"],
         "properties": {
@@ -110,15 +110,15 @@ def heterogeneity_table(data: dict) -> plt.Figure:
         },
     }
 
-    _schema = {
+    schema = {
         "type": "object",
         "required": ["heterogeneity"],
         "properties": {
-            "heterogeneity": {"oneOf": [_nma_heterogeneity, _bnma_heterogeneity]}
+            "heterogeneity": {"oneOf": [nma_heterogeneity, bnma_heterogeneity]}
         },
     }
 
-    jsonschema.validate(instance=data, schema=_schema)
+    jsonschema.validate(instance=data, schema=schema)
     return _table(data["heterogeneity"])
 
 
@@ -135,7 +135,7 @@ def forest_plot(data: dict, reference: str) -> plt.Figure:
 
     Raises `RuntimeError` if `reference` is not found in the data.
     """
-    _matrix = {
+    matrix = {
         "type": "object",
         "additionalProperties": {
             "type": "object",
@@ -143,7 +143,7 @@ def forest_plot(data: dict, reference: str) -> plt.Figure:
         },
     }
 
-    _schema = {
+    schema = {
         "type": "object",
         "required": ["league"],
         "properties": {
@@ -151,16 +151,16 @@ def forest_plot(data: dict, reference: str) -> plt.Figure:
                 "type": "object",
                 "required": ["md", "lower", "upper"],
                 "properties": {
-                    "md": _matrix,
-                    "lower": _matrix,
-                    "upper": _matrix,
-                    "pval": _matrix,
+                    "md": matrix,
+                    "lower": matrix,
+                    "upper": matrix,
+                    "pval": matrix,
                 },
             }
         },
     }
 
-    jsonschema.validate(instance=data, schema=_schema)
+    jsonschema.validate(instance=data, schema=schema)
     ref = re.sub(r"[^A-Za-z0-9_]", "_", reference)
     if ref not in data["league"]["md"]:
         raise RuntimeError("Missing reference")
@@ -177,7 +177,7 @@ def prediction_table(data: dict) -> plt.Figure:
 
     Each cell shows the 95% prediction interval for the row treatment relative to the column treatment.
     """
-    _matrix = {
+    matrix = {
         "type": "object",
         "additionalProperties": {
             "type": "object",
@@ -185,19 +185,19 @@ def prediction_table(data: dict) -> plt.Figure:
         },
     }
 
-    _schema = {
+    schema = {
         "type": "object",
         "required": ["prediction"],
         "properties": {
             "prediction": {
                 "type": "object",
                 "required": ["lower", "upper"],
-                "properties": {"lower": _matrix, "upper": _matrix},
+                "properties": {"lower": matrix, "upper": matrix},
             }
         },
     }
 
-    jsonschema.validate(instance=data, schema=_schema)
+    jsonschema.validate(instance=data, schema=schema)
     return _grid(data["prediction"])
 
 
@@ -209,7 +209,7 @@ def convergence_table(data: dict) -> plt.Figure:
 
     Returns R̂ (max), ESS bulk (min), and ESS tail (min) across all model parameters.
     """
-    _schema = {
+    schema = {
         "type": "object",
         "required": ["convergence"],
         "properties": {
@@ -224,5 +224,5 @@ def convergence_table(data: dict) -> plt.Figure:
             }
         },
     }
-    jsonschema.validate(instance=data, schema=_schema)
+    jsonschema.validate(instance=data, schema=schema)
     return _table(data["convergence"])

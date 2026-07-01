@@ -21,6 +21,6 @@ classifiers = [
 dependencies = ["jsonschema", "matplotlib", "pandas", "plottable"]
 
 [project.urls]
-Homepage = https://davisethan.github.io/tombolo-py
+Homepage = "https://davisethan.github.io/tombolo-py"
 Source = "https://github.com/davisethan/tombolo-py"
 "Docker Hub" = "https://hub.docker.com/r/ethandavisecd/tombolo"
